@@ -17,16 +17,22 @@ before_script:
 script:
  - ./tests/tests-ci.sh
 
-after_success:
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  # quick fix for issue 223
-  - if [ "$TRAVIS_BRANCH" != "master" ]; then export TRAVIS_EVENT_TYPE=pull_request; fi
-  - bash ./upload.sh ./linuxdeployqt-*.AppImage*
+#after_success:
+#  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+#  # quick fix for issue 223
+#  - if [ "$TRAVIS_BRANCH" != "master" ]; then export TRAVIS_EVENT_TYPE=pull_request; fi
+#  - bash ./upload.sh ./linuxdeployqt-*.AppImage*
 
 after_script:
   - "xpra stop :99"
 
-branches:
-  except:
-    - # Do not build tags that we create when we upload to GitHub Releases
-    - /^(?i:continuous)$/
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: J+EBDIlwH01p0Y4oqLM4noNCGipWyiAJ/QSYoJPeTNRHGFHOyVBl32nHpW6/B63givUEzOF255f3bQfMXczwswW8pUMuSAsZ8T8/wLhyZsqwF/xA1oCkUp/y1CjxIKh6fWKuQJQmXQrac4hqz031MouNi4oyFvHCtf9Ly/i5qN2hj7YCJ40NOKQ/V3u1Z2+29yy3AfxdoDHXXpZ30JgS2KBjCmmupI764d6QCJzqyyI2Y57pYh3w4TV3DTIIE/yOhRHxSjwGxKF7FPyEMwFcetwkNc3QjYtRFte3I5C+BEKsgAcS7QhwM8CbO6vHX5StYT3he8fu6rtOFdWOhkbbZDZ3Vm0U6oviTrRkCMYxa0tQO6MFs2vxA+8tQQh0J+SqLv70MuoTuzp2kCz6godxfcXSTuc5y13cUHKOqOUpt33+kbVlsv3y+EmDD7HYT9E9BGImiZBTunAF0VRrECS4TImLxCEYn7E21LcmP2HjCOaxqFoKzc+sCzjU71T4eutRs/06/l6vZ7g7vRxvm9mFIbvqXrCEL/+L3CEZKlz1DOvT4wU1zXyn+rk0O6Es6hQkcwYBz7Usgv1GrojGAwRxwqOaIbnCHn3ODeweTjMc0IVj3u6SWiuK0Z5w0oXNfLAzRblxvqOAciZr4iZxQHhI5QwBQBN0D2tbE6PFqSLeTF4=
+  file_glob: true
+  file: linuxdeployqt-*.AppImage*
+  on:
+    tags: true
+    repo: thestr4ng3r/linuxdeployqt
